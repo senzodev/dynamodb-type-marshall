@@ -21,11 +21,12 @@ npm install dynamodb-type-marshall
 _input_ - Convert an individual field to a DynamoDB type, using DynamoDB type schema
 
 **Parameters**
+
 - data (Any type - required) - The data you need converted in DynamoDB type schema
 
 - options (object - optional)
-    - convertEmptyValues (boolean) - Convert empty strings, blobs and sets to `null`.
-      
+  - convertEmptyValues (boolean) - Convert empty strings, blobs and sets to `null`.
+
 ```js
 const stringType = input('This is a string')
 console.log(JSON.stringify(stringType))
@@ -38,10 +39,14 @@ _output_ - Convert a field in DynamoDB type schema to normal type
 - data (Any type - required) - The data you need converted in DynamoDB type schema
 
 - options (object - optional)
-    - convertEmptyValues (boolean) - Convert empty strings, blobs and sets to `null`.
+  - convertEmptyValues (boolean) - Convert empty strings, blobs and sets to `null`.
 
 ```js
-const normalString = output({ 'S': 'This is a String'})
+const normalString = output({ S: 'This is a String' })
+console.log(normalString)
+
+// prints 'This is a String'
+```
 
 ## Complex Example
 
