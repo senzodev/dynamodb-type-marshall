@@ -1,0 +1,16 @@
+{
+  "name": "dynamodb-type-marshall",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Ant Stanley",
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^3.12.1",
+    "lerna": "^3.22.1"
+  }
+}
