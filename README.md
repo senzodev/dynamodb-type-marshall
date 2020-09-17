@@ -8,13 +8,13 @@ The library is available as either a CommonJS module or an ES Module, under diff
 
 The library exports 4 methods, `input`, `output`, `marshall` and`unmarshall`. The `input` and `output` methods are intended to be used on individual fields. The `marshall` and `unmarshall` methods are intended to be used on Objects.
 
-CommonJS usage example with  - `dynamodb-type-marshall`
+CommonJS usage example with - `dynamodb-type-marshall`
 
 ES Module - `@esmodule/dynamodb-type-marshall`
 
 Why two packages? Firstly future proofing and avoiding duplicate libraries in one package. A consumer of the package will only ever need one way of consuming this library, no need to ship both ways and doubling the package size.
 
-The library is written using ES Modules. The `@esmodule/dynamodb-type-marshall` package is a copy of the source code with no transpilation. The CommonJS module `dynamodb-type-marshall` is a transpiled version of the code using Babel. 
+The library is written using ES Modules. The `@esmodule/dynamodb-type-marshall` package is a copy of the source code with no transpilation. The CommonJS module `dynamodb-type-marshall` is a transpiled version of the code using Babel.
 
 ## Project Structure
 
@@ -27,12 +27,13 @@ The library is written using ES Modules. The `@esmodule/dynamodb-type-marshall` 
 
 To develop this library, simply clone this repo locally, and run `npm install`.
 
-It has the following npm scripts, which can be run  using `npm run <script name>`.
+It has the following npm scripts, which can be run using `npm run <script name>`.
 
 `lint` - Run ES lint on the source
-`package` - Run the package scripts, creating the package folders and creating the library versions
+`package` - Run both sets of package scripts, creating the package folders and creating the library versions
+`package:esm` - Run the ES Module package scripts, creating the package folders and creating the library versions
+`package:cjs` - Run the CommonJS package scripts, creating the package folders and creating the library versions
 `publish` - Publish the package versions to npm, will require credentials, typically run by the CI
 `test` - Run the test suite on the source code in `src`
 `test:watch` - Watch the source code for changes and run the relevant tests again
 `test:cjs` - Run the test suite on the transpiled CommonJS code transpiled in `packages/cjs/`, just to make sure no errors introduced during transpilation.
-
