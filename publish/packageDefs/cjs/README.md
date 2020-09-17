@@ -2,11 +2,11 @@
 
 A library to convert a JSON object into DynamoDB's requested type schema and back again.
 
-This code is forked and updated from the original [DocumentClient library's function](https://github.com/aws/aws-sdk-js/blob/master/lib/dynamodb/converter.js) which does the same thing , which exists in `aws-sdk` v1 and v2, but does not yet exist in the complete re-write for v3 of `aws-sdk`.
+This code is forked and updated from the original [DocumentClient library's converter function](https://github.com/aws/aws-sdk-js/blob/master/lib/dynamodb/converter.js) which does the same thing , which exists in `aws-sdk` v1 and v2, but does not yet exist in the complete re-write for v3 of `aws-sdk`.
 
 The library is available as either a CommonJS module or an ES Module, under different packages. This documentation is for the **CommonJS** module.
 
-The library exports 5 methods, `input`, `output`, `marshall`, `unmarshall` and a bonus method `buildUpdateParams`. The `input` and `output` methods are intended to be used on individual values. The `marshall` and `unmarshall` methods are intended to be used on Objects. The `buildUpdateParams` is a helper method that will create the correct parameters to update a complex document in DynamoDB as per the `updateItem` (`aws-sdk` v2) or `updateItemCommand` (`aws-sdk` v3) [spec](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateItem-property).
+The library exports 5 methods, `input`, `output`, `marshall`, `unmarshall` and a bonus method `buildUpdateParams`. The `input` and `output` methods are intended to be used on individual values. The `marshall` and `unmarshall` methods are intended to be used on Objects. The `buildUpdateParams` is a helper method that will create the correct parameters to update a complex document in DynamoDB as per the `updateItem` (`aws-sdk` v2) [spec](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateItem-property) or `updateItemCommand` (`aws-sdk` v3) .
 
 ## Installation
 
@@ -18,34 +18,158 @@ npm install dynamodb-type-marshall
 
 ### input
 
-_input_ - Convert an individual field to a DynamoDB type, using DynamoDB type schema
+_input_ - Convert an individual field to an object using the DynamoDB AttributeValue type schema
 
-**Parameters**
+#### Parameters
 
 - data (Any type - required) - The data you need converted in DynamoDB type schema
 
 - options (object - optional)
+
   - convertEmptyValues (boolean) - Convert empty strings, blobs and sets to `null`.
+
+#### Return
+
+(Object)
+
+#### Example
 
 ```js
 const stringType = input('This is a string')
 console.log(JSON.stringify(stringType))
 
-// prints { 'S': 'This is a String' }
+// returns: { 'S': 'This is a String' }
 ```
 
-_output_ - Convert a field in DynamoDB type schema to normal type
+### output
 
-- data (Any type - required) - The data you need converted in DynamoDB type schema
+_output_ - Convert an object describing an individual field using the DynamoDB AttributeValue type schema to normal type
+
+#### Parameters
+
+- data (object - required) - An object in the Amazon DynamoDB AttributeValue format
 
 - options (object - optional)
-  - convertEmptyValues (boolean) - Convert empty strings, blobs and sets to `null`.
+
+  - wrapNumbers (boolean) - Whether to return numbers as a NumberValue object instead of converting them to native JavaScript numbers. This allows for the safe round-trip transport of numbers of arbitrary size.
+
+  - v3 (boolean) - set to `true` if using the library with `aws-sdk` v3, which returns `list` and `map` data slighly differently to the v2 of the `aws-sdk` SDK
+
+#### Return
+
+(Object|Array|String|Number|Boolean|null)
+
+#### Example
 
 ```js
 const normalString = output({ S: 'This is a String' })
-console.log(normalString)
 
-// prints 'This is a String'
+// returns: 'This is a String'
+```
+
+### marshall
+
+_marshall_ - Convert a normal JavaScript object to a JavaScript object using the DynamoDB AttributeValue type schema
+
+#### Parameters
+
+- data (object - required) - The data you need converted in DynamoDB type schema
+
+- options (object - optional)
+
+  - convertEmptyValues (boolean) - Convert empty strings, blobs and sets to `null`.
+
+#### Return
+
+(Object)
+
+#### Example
+
+```js
+const stringType = marshall({ simpleString: 'This is a String' })
+
+// returns: { simpleString: { 'S': 'This is a String' } }
+```
+
+### unmarshall
+
+_unmarshall_ - Convert an object in DynamoDB AttributeValue type schema to a plain JavaScript object
+
+#### Parameters
+
+- data (object - required) - An object in the Amazon DynamoDB AttributeValue format
+
+- options (object - optional)
+
+  - wrapNumbers (boolean) - Whether to return numbers as a NumberValue object instead of converting them to native JavaScript numbers. This allows for the safe round-trip transport of numbers of arbitrary size.
+
+  - v3 (boolean) - set to `true` if using the library with `aws-sdk` v3, which returns `list` and `map` data slighly differently to the v2 of the `aws-sdk` SDK
+
+#### Return
+
+(Object)
+
+#### Example
+
+```js
+const normalString = unmarshall({ simpleString: { S: 'This is a String' } })
+
+// result: { simpleString: 'This is a String' }
+```
+
+### buildUpdateParams
+
+_buildUpdateParams_ - Helper method to create the correct paramters needed to run an `updateItem` (`aws-sdk` v2) or `updateItemCommand` (`aws-sdk` v3) command.
+
+#### Parameters
+
+- data (object - required) - A plain JavaScipt object containing the fields you want to update on your item in DynamoDB
+
+#### Return
+
+(Object)
+
+- UpdateExpression - A string in the format required for the `UpdateExpression` parameter needed for `updateItem`
+- ExpressionAttributeNames - A string in the format required for the `ExpressionAttributeNames` parameter needed for `updateItem`
+- ExpressionAttributeValues - A string in the format required for the `ExpressionAttributeNames` parameter needed for `updateItem`
+
+#### Example
+
+```js
+const item = {
+  data: 'some data to update',
+  moreData: 'some more data to update'
+}
+
+const {
+  UpdateExpression,
+  ExpressionAttributeNames,
+  ExpressionAttributeValues
+} = buildUpdateParams(item)
+
+
+{
+  "UpdateExpression": "SET #VZ7Q = :ClVV6, #3Ftb = :ALE5E",
+  "ExpressionAttributeNames": {
+    "#VZ7Q": "data",
+    "#3Ftb": "moreData"
+  },
+  "ExpressionAttributeValues": {
+    ":ClVV6": {
+      "S": "some data to update"
+    },
+    ":ALE5E": {
+      "S": "some more data to update"
+    }
+  }
+}
+
+
+// returns:
+// UpdateExpression: "SET #VZ7Q = :ClVV6, #3Ftb = :ALE5E"
+// ExpressionAttributeNames: { "#VZ7Q": "data", "#3Ftb": "moreData" }
+// ExpressionAttributeValues: { ":ClVV6": { "S": "some data to update" }, ":ALE5E": { "S": "some more data to update" }
+
 ```
 
 ## Complex Example
