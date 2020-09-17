@@ -11,16 +11,6 @@ function mapToObject (processMap) {
   return returnObject
 }
 
-const randomString = stringLength => {
-  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'
-  let randomstring = ''
-  for (let i = 0; i < stringLength; i++) {
-    const rnum = Math.floor(Math.random() * chars.length)
-    randomstring += chars.substring(rnum, rnum + 1)
-  }
-  return randomstring
-}
-
 const identifierString = stringLength => {
   const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'
   let randomstring = ''
