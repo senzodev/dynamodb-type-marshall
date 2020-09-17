@@ -2,7 +2,7 @@
   "name": "dynamodb-type-marshall",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "ava",
     "test:watch": "ava --watch"
