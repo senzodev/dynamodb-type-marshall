@@ -1,0 +1,10 @@
+{
+  "name": "@esmodule/dynamodb-type-marshall",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Convert plain JavaScript types to DynamoDB AttributeValue types - ES Module",
+  "main": "lib/index.js",
+  "keywords": ["DynamoDB", "types", "AttributeValue"],
+  "author": "Ant Stanley",
+  "license": "MIT"
+}

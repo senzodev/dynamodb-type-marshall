@@ -5,13 +5,20 @@
   "type": "module",
   "scripts": {
     "test": "ava",
-    "test:watch": "ava --watch"
+    "test:watch": "ava --watch",
+    "lint": "eslint"
   },
   "keywords": [],
   "author": "Ant Stanley",
   "license": "MIT",
   "devDependencies": {
     "ava": "^3.12.1",
+    "eslint": "^7.9.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "esm": "^3.2.25",
     "lerna": "^3.22.1"
   }
