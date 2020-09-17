@@ -1,5 +1,8 @@
 import { input } from '../marshall/index.js'
 
+const seedIncrement = 1 / 62
+let identifierSeed = seedIncrement
+
 function mapToObject (processMap) {
   const returnObject = {}
   for (const [key, value] of processMap) {
@@ -18,6 +21,21 @@ const randomString = stringLength => {
   return randomstring
 }
 
+const identifierString = stringLength => {
+  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'
+  let randomstring = ''
+
+  for (let i = 1; i <= stringLength; i++) {
+    const seedModifier = identifierSeed * i - Math.trunc(identifierSeed * i)
+    const rnum = Math.floor(seedModifier * chars.length)
+    randomstring += chars.substring(rnum, rnum + 1)
+  }
+
+  identifierSeed += seedIncrement
+
+  return randomstring
+}
+
 const buildUpdateExpression = (
   item,
   parent,
@@ -29,7 +47,7 @@ const buildUpdateExpression = (
       if (Array.isArray(item[index])) {
         const tempArray = item[index]
         // console.log(tempArray)
-        const identifier = `#${randomString(4)}`
+        const identifier = `#${identifierString(4)}`
         // attributeNameObj[identifier] = index
         for (let i = 0; i < tempArray.length; i++) {
           const indexIdentifier = `${identifier}[${i}]`
@@ -49,13 +67,13 @@ const buildUpdateExpression = (
           }
         }
       } else {
-        const identifier = `#${randomString(4)}`
+        const identifier = `#${identifierString(4)}`
         attributeNameObj[identifier] = index
         const key = parent ? `${parent}.${identifier}` : identifier
         buildUpdateExpression(item[index], key, expressionMap, attributeNameObj)
       }
     } else {
-      const identifier = `#${randomString(4)}`
+      const identifier = `#${identifierString(4)}`
       attributeNameObj[identifier] = index
       const key = parent ? `${parent}.${identifier}` : identifier
       expressionMap.set(key, item[index])
@@ -73,7 +91,7 @@ const buildUpdateParams = item => {
   const mapExpressionAttributeValues = new Map()
 
   for (const [key, value] of returnMap.entries()) {
-    const variableidentifier = randomString(5)
+    const variableidentifier = identifierString(5)
     strUpdateExpression += ` ${key} = :${variableidentifier},`
     mapExpressionAttributeValues.set(`:${variableidentifier}`, input(value))
   }
