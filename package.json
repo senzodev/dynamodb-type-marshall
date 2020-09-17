@@ -6,12 +6,18 @@
   "scripts": {
     "test": "ava",
     "test:watch": "ava --watch",
-    "lint": "eslint"
+    "lint": "eslint",
+    "package:prepare": "node publish/index.js",
+    "package:cjs": "npm run package:prepare && babel src -d package/cjs/lib",
+    "package:esm": "cp -r src/. package/esm/.",
+    "package": "npm run package:esm && npm run package:cjs"
   },
   "keywords": [],
   "author": "Ant Stanley",
   "license": "MIT",
   "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
     "ava": "^3.12.1",
     "eslint": "^7.9.0",
     "eslint-config-standard": "^14.1.1",
