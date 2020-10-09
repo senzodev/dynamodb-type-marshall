@@ -9,7 +9,7 @@
     "lint": "eslint",
     "package:prepare": "node publish/index.js",
     "package:cjs": "npm run package:prepare && babel src -d package/cjs/lib",
-    "package:esm": "cp -r src/. package/esm/.",
+    "package:esm": "rm -rf package/esm/ && mkdir package/esm/ && cp -r src/. package/esm/lib/",
     "package": "npm run package:esm && npm run package:cjs"
   },
   "keywords": [],
